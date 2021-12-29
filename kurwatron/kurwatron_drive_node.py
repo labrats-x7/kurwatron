@@ -34,7 +34,7 @@ import busio
 
 
 
-global thrinit, strinit, maxr, minl, maxthr, minthr, throttle, reverse, steer, newthrvalue, newstrvalue
+global thrinit, strinit, maxr, minl, maxthr, minthr, throttle, reverse, steer, newthrvalue, newstrvalue, comm
 
 
 
@@ -52,7 +52,7 @@ revvalue = 0
 strvalue = 0
 newthrvalue = 0
 newstrvalue = 0
-
+comm = False
 
 
 kit = ServoKit(channels=16, address=0x40)
@@ -98,9 +98,10 @@ class KurwatronDrive(Node):
 #        light=msg.somebutton tbd
 
         self.get_logger().info('Forward: "%s"' % throttle)
-        self.get_logger().info('Reverse: "%s"' % brake)
+        self.get_logger().info('Reverse: "%s"' % reverse)
         self.get_logger().info('Steer: "%s"' % steer)
-        self.get_logger().info('Light: "%s"' % light)
+#        self.get_logger().info('Light: "%s"' % light)
+        comm = True
 
 
 
@@ -149,9 +150,14 @@ def main(args=None):
     kurwatron_drive = KurwatronDrive(qos_profile, event_callbacks=subscription_callbacks)
 
     #hier muss die loop hin die auf den SbscriptionEventCallback bei liveliness fail wartet
-    rclpy.spin_once(kurwatron_drive,timeout_sec=3)
-    convertscales(throttle,reverse,steer)
-    send_pwm(newthrvalue,newstrvalue)
+    while comm == False:
+        send_pwm(90,90)
+        rclpy.spin_once(kurwatron_drive,timeout_sec=5)
+    
+    while comm == True:    
+        rclpy.spin_once(kurwatron_drive,timeout_sec=3)
+        convertscales(throttle,reverse,steer)
+        send_pwm(newthrvalue,newstrvalue)
     
     
 
