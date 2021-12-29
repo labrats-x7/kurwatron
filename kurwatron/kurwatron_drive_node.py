@@ -136,7 +136,6 @@ def send_pwm(thrnum,strnum):
 
 
 def main(args=None):
-    pimmel = 0
     rclpy.init(args=args)
     
     liveliness_lease_duration = Duration(seconds= 3 /1000.0)
@@ -152,7 +151,7 @@ def main(args=None):
     #hier muss die loop hin die auf den SbscriptionEventCallback bei liveliness fail wartet
     rclpy.spin_once(kurwatron_drive,timeout_sec=3)
     convertscales(throttle,reverse,steer)
-    send_pwm(pimmel,newstrvalue)
+    send_pwm(newthrvalue,newstrvalue)
     
     
 

@@ -1,0 +1,15 @@
+[0.000000] (-) TimerEvent: {}
+[0.001014] (kurwatron) JobQueued: {'identifier': 'kurwatron', 'dependencies': OrderedDict()}
+[0.002010] (kurwatron) JobStarted: {'identifier': 'kurwatron'}
+[0.099163] (-) TimerEvent: {}
+[0.200023] (-) TimerEvent: {}
+[0.300728] (-) TimerEvent: {}
+[0.401415] (-) TimerEvent: {}
+[0.502301] (-) TimerEvent: {}
+[0.603147] (-) TimerEvent: {}
+[0.703785] (-) TimerEvent: {}
+[0.804408] (-) TimerEvent: {}
+[0.905058] (-) TimerEvent: {}
+[1.005984] (-) TimerEvent: {}
+[1.044106] (kurwatron) JobEnded: {'identifier': 'kurwatron', 'rc': 0}
+[1.047453] (-) EventReactorShutdown: {}
