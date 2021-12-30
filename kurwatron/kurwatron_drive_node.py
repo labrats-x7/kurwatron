@@ -52,7 +52,8 @@ revvalue = 0
 strvalue = 0
 newthrvalue = 0
 newstrvalue = 0
-comm = False
+
+
 
 
 kit = ServoKit(channels=16, address=0x40)
@@ -92,20 +93,22 @@ class KurwatronDrive(Node):
         self.subscription #prevent unused variable warning
 
     def listener_callback(self, msg):
+        global comm, throttle, reverse, steer
         throttle=msg.linear.x
         reverse=msg.linear.y
         steer=msg.angular.z
-#        light=msg.somebutton tbd
+        
+        comm = True
 
         self.get_logger().info('Forward: "%s"' % throttle)
         self.get_logger().info('Reverse: "%s"' % reverse)
         self.get_logger().info('Steer: "%s"' % steer)
-#        self.get_logger().info('Light: "%s"' % light)
-        comm = True
+        self.get_logger().info('comm: "%s"' % comm)
 
 
 
 def convertscales(thrvalue,revvalue,strvalue):
+    global newthrvalue, newstrvalue
     # 0=1-1  max=-1-1=-2	min=1--1=2
     newthrvalue = int(90+((thrvalue)-(revvalue))*-45)
     
@@ -114,7 +117,8 @@ def convertscales(thrvalue,revvalue,strvalue):
         newthrvalue = maxthr
     if newthrvalue < minthr:
         newthrvalue = minthr
-        
+    
+            
     if strvalue < 0:
         strvalue = -strvalue
         newstrvalue=int(strinit+(strvalue*((maxr-strinit)/3)))
@@ -126,17 +130,24 @@ def convertscales(thrvalue,revvalue,strvalue):
         newstrvalue = maxr
     if newstrvalue < minl:
         newstrvalue = minl
+        
+    print("converstscales:  Throttle="+str(newthrvalue)+" ,  Steering="+str(newstrvalue))
+    
 
 
 
 def send_pwm(thrnum,strnum):
-    print("Moving Robot:  Throttle="+str(thrnum)+" ,  Steering="+str(strnum))
-    #kit.servo[0].angle = thrnum
-    #kit.servo[1].angle = strnum
+    print("send PWM:  Throttle="+str(thrnum)+" ,  Steering="+str(strnum))
+    kit.servo[0].angle = thrnum
+    kit.servo[1].angle = strnum
 
 
 
 def main(args=None):
+    global thrinit, strinit, maxr, minl, maxthr, minthr, throttle, reverse, steer, newthrvalue, newstrvalue, comm
+    comm = False
+    
+    
     rclpy.init(args=args)
     
     liveliness_lease_duration = Duration(seconds= 3 /1000.0)
@@ -149,17 +160,26 @@ def main(args=None):
     subscription_callbacks = SubscriptionEventCallbacks(liveliness=lambda event: get_logger('KurwatronDrive').info(str(event)))
     kurwatron_drive = KurwatronDrive(qos_profile, event_callbacks=subscription_callbacks)
 
-    #hier muss die loop hin die auf den SbscriptionEventCallback bei liveliness fail wartet
-    while comm == False:
-        send_pwm(90,90)
-        rclpy.spin_once(kurwatron_drive,timeout_sec=5)
+    # stillstand senden bei timeout
+    while True:
+        print("while not comm")
+        print('comm: "%s"' % comm)
+        print("spin_once")
+        rclpy.spin_once(kurwatron_drive,timeout_sec=1)
+        print('comm: "%s"' % comm)
+        if not comm:
+            send_pwm(90,90)
+        while comm:
+            print("while comm")
+            convertscales(throttle,reverse,steer)
+            send_pwm(newthrvalue,newstrvalue)
+            comm = False
+            rclpy.spin_once(kurwatron_drive,timeout_sec=1)
+            if not comm:
+                break 
     
-    while comm == True:    
-        rclpy.spin_once(kurwatron_drive,timeout_sec=3)
-        convertscales(throttle,reverse,steer)
-        send_pwm(newthrvalue,newstrvalue)
-    
-    
+    # cmd_vel werte senden wenn kein timeout passiert ist
+   
 
     # Destroy the node explicitly
     # (optional - otherwise it will be done automatically
