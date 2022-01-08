@@ -14,10 +14,12 @@ nano /boot/firmware/network-config
 (https://roboticsbackend.com/install-ros2-on-raspberry-pi/)
 
 #### Setup locale:
+```
 sudo apt update && sudo apt install locales
 sudo locale-gen en_US en_US.UTF-8
 sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 export LANG=en_US.UTF-8
+```
 
 
 #### Setup sources
@@ -60,13 +62,19 @@ sudo usermod -aG i2c ubuntu
 
 #### Setup VPN autoconnect for Fritzbox:
 sudo apt install vpnc
-configure VPN connection:
+
+#### configure VPN connection:
 sudo touch /etc/vpnc/fritzbox.conf
+
 sudo nano /etc/vpnc/fritzbox.conf
-Install AutoVPN-script:
+
+#### Install AutoVPN-script:
 cp autovpnsript.sh /etc/init.d/autovpnsript.sh
+
 sudo chmod +x /etc/init.d/autovpnsript.sh
+
 sudo crontab -a
+
 */2 * * * * /etc/init.d/autovpnscript.sh
 
 
@@ -112,42 +120,17 @@ ros2 run kurwatron drive
 
 ### image
 ros2 run rqt_image_view rqt_image_view --ros-args -p reliability:=best_effort
+
 ros2 launch teleop_twist_joy teleop-launch.py joy_config:='ps3'
 
 ros2 run image_transport republish compressed --ros-args --remap in/compressed:=/image_raw/compressed --ros-args --remap out:=image/decompressed
 
 
 ros2 run rqt_reconfigure rqt_reconfigure
+
 rqt_graph
 
 
 ### PS4 Dualshock configuration (USB connected)
-sudo gedit /opt/ros/foxy/share/teleop_twist_joy/config/ps3.config.yaml
 
-''''Json
-teleop_twist_joy_node:
-  ros__parameters:
-    axis_linear:
-      x: 5
-    scale_linear:
-      x: 0.2
-    scale_linear_turbo:
-      x: 0.4
-
-    axis_linear:
-      y: 2
-    scale_linear:
-      y: 0.2
-    scale_linear_turbo:
-      y: 0.4
-
-    axis_angular:
-      yaw: 3
-    scale_angular:
-      yaw: 0.6
-    scale_angular_turbo:
-      yaw: 0.7
-
-    enable_button: 5  # L1 shoulder button
-    enable_turbo_button: 4  # R1 shoulder button
-''''
+sudo cp ~/ros2_ws/src/kurwatron/ps3.config.yaml /opt/ros/foxy/share/teleop_twist_joy/config/ps3.config.yaml
