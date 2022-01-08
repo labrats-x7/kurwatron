@@ -89,10 +89,15 @@ sudo touch /etc/vpnc/fritzbox.conf
 sudo nano /etc/vpnc/fritzbox.conf
 ```
 
+### Load kurwatron package from git
+```
+mkdir ~/ros2_ws/src
+cd ~/ros2_ws/src git clone https://github.com/labrats-x7/kurwatron.git
+```
 
 ##### Install AutoVPN-script:
 ```
-cp autovpnsript.sh /etc/init.d/autovpnsript.sh
+cp ~ros2_ws/src/kurwatron/autovpnsript.sh /etc/init.d/autovpnsript.sh
 sudo chmod +x /etc/init.d/autovpnsript.sh
 sudo crontab -a
 ```
@@ -103,17 +108,12 @@ add:
 
 ---
 
-## Load and build kurwatron ROS2 package:
+## Build kurwatron ROS2 package:
 
-### Load kurwatron package from git
+
+### Build package with colcon
 ```
-mkdir ~/ros2_ws
-cd ~/ros2_ws git clone https://github.com/labrats-x7/kurwatron.git
 cd ~/ros2_ws
-```
-
-### build package with colcon
-```
 colcon build --packages-select kurwatron --allow-overriding kurwatron
 ```
 
@@ -126,10 +126,6 @@ source ros2_ws/install/local_setup.bash
 
 ## Run (on ROS2 Rover instance):
 
-### reset USB interface
-```
-uhubctl -l 1-1 -a 2 -R
-```
 
 ### check i2c communication (ID 40 present?)
 ```
@@ -155,7 +151,22 @@ ros2 run kurwatron drive
 ---
 
 
-## Base Station (ROS2 also on ROS_DOMAIN_ID 13)
+## Base Station (ROS2 installation on your computer)
+
+### Setup environment:
+```
+sudo nano ~/.bashrc
+```
+
+and add the following 5 lines:
+
+```
+source /opt/ros/foxy/setup.bash
+source /usr/share/colcon_cd/function/colcon_cd.sh
+source ~/ros2_ws/install/local_setup.bash
+export _colcon_cd_root=~/ros2_install
+export ROS_DOMAIN_ID=13
+```
 
 ### PS4 Dualshock configuration (USB connected)
 ```
@@ -173,9 +184,12 @@ ros2 run rqt_image_view rqt_image_view --ros-args -p reliability:=best_effort
 ros2 launch teleop_twist_joy teleop-launch.py joy_config:='ps3'
 ```
 
+control the rover :-)
+
+
 ---
 
-### helpful ROS2 tools
+### helpful tools
 ```
 ros2 doctor
 ros2 topic list
@@ -183,5 +197,6 @@ ros2 topic echo topic/to_echo
 ros2 param list /v4l2_camera
 ros2 run rqt_reconfigure rqt_reconfigure
 rqt_graph
+uhubctl -l 1-1 -a 2 -R
 ```
 
