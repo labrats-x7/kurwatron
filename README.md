@@ -77,34 +77,41 @@ sudo groupadd i2c
 sudo usermod -aG i2c ubuntu
 ```
 
-#### Setup VPN autoconnect for Fritzbox:
-```
-sudo apt install vpnc
-```
-
-##### configure VPN connection:
-follow: http://www.kuemmel.wtf/?p=363
-```
-sudo touch /etc/vpnc/fritzbox.conf
-sudo nano /etc/vpnc/fritzbox.conf
-```
-
-### Load kurwatron package from git
+#### Load kurwatron package from git
 ```
 mkdir ~/ros2_ws/src
 cd ~/ros2_ws/src git clone https://github.com/labrats-x7/kurwatron.git
 ```
 
-##### Install AutoVPN-script:
+---
+
+### Setup VPN autoconnect for Fritzbox (if needed):
+```
+sudo apt install vpnc
+```
+
+#### configure VPN connection:
+
+For Fritzbox VPN follow: http://www.kuemmel.wtf/?p=363
+(Other VPN services are also possible but not covered here.)
+
+```
+sudo touch /etc/vpnc/fritzbox.conf
+sudo nano /etc/vpnc/fritzbox.conf
+```
+
+#### Install AutoVPN-script:
 ```
 cp ~ros2_ws/src/kurwatron/autovpnsript.sh /etc/init.d/autovpnsript.sh
 sudo chmod +x /etc/init.d/autovpnsript.sh
 sudo crontab -a
 ```
-add:
+add the following line for a check every 2 minutes:
 ```
 */2 * * * * /etc/init.d/autovpnscript.sh
 ```
+
+Adapt /etc/init.d/autovpnscript.sh file for your network configuration and VPN tool!
 
 ---
 
@@ -112,6 +119,9 @@ add:
 
 
 ### Build package with colcon
+
+Adapt the ~/ros2_ws/src/kurwatron/kurwatron/kurwatron_drive_node.py for your needs if you use another steering system like ackermann or differential drive :)
+
 ```
 cd ~/ros2_ws
 colcon build --packages-select kurwatron --allow-overriding kurwatron
