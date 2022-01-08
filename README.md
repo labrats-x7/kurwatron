@@ -1,6 +1,12 @@
 # kurwatron
 ROS 2 (Foxy) package for Raspberry Pi 4, a pca9685 PWM board and camera for teleoperation of a "Ripsaw" style tracked rover
 
+![KurwaTron_1](/kurwatron_1.jpg) 
+![KurwaTron_2](/kurwatron_2.jpg) 
+![KurwaTron_3](/kurwatron_3.jpg) 
+
+
+
 ---
 ## Install Ubuntu and ROS2 Foxy:
 
