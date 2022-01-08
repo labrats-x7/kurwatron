@@ -6,7 +6,11 @@ Install:
 Set up ROS2 Foxy on Ubuntu Server 20.04 for Raspberry Pi 4B +2Gb:
 https://roboticsbackend.com/install-ubuntu-on-raspberry-pi-without-monitor/
 
+
+
 Install ROS2 Foxy on your fresh Ubuntu Server 20.04 install:
+
+(https://roboticsbackend.com/install-ros2-on-raspberry-pi/)
 
 Setup locale:
 sudo apt update && sudo apt install locales
@@ -14,24 +18,26 @@ sudo locale-gen en_US en_US.UTF-8
 sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 export LANG=en_US.UTF-8
 
+
 Setup sources
 sudo apt update && sudo apt install curl gnupg2 lsb-release
 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(source /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
+
 Install ROS2 core packages:
 sudo apt update
 sudo apt install ros-foxy-ros-base
 
+
 Install colcon:
 sudo apt install python3-colcon-common-extensions
+
 
 Install auto completion:
 sudo apt install python3-pip
 pip3 install argcomplete
 
-
-install python pca9685, ... packages
 
 Setup environment:
 
@@ -44,6 +50,8 @@ source ~/ros2_ws/install/local_setup.bash
 export _colcon_cd_root=~/ros2_install
 export ROS_DOMAIN_ID=13
 
+
+install python packages: adafruit_pca9685, adafruit_servokit, serial
 
 
 Setup VPN for Fritzbox:
@@ -58,12 +66,16 @@ sudo crontab -a
 */2 * * * * /etc/init.d/autovpnscript.sh
 
 
+
+
 Build kurwatron ROS2 package:
 cd ~/ros2_ws
 colcon build --packages-select kurwatron --allow-overriding kurwatron
 
 Source:
 source ros2_ws/install/local_setup.bash
+
+
 
 Run (Rover):
 
