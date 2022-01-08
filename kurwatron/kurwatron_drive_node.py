@@ -160,23 +160,20 @@ def main(args=None):
     subscription_callbacks = SubscriptionEventCallbacks(liveliness=lambda event: get_logger('KurwatronDrive').info(str(event)))
     kurwatron_drive = KurwatronDrive(qos_profile, event_callbacks=subscription_callbacks)
 
-    # stillstand senden bei timeout
     while True:
-        print("while not comm")
-        print('comm: "%s"' % comm)
-        print("spin_once")
-        rclpy.spin_once(kurwatron_drive,timeout_sec=1)
-        print('comm: "%s"' % comm)
         if not comm:
             send_pwm(90,90)
+            rclpy.spin_once(kurwatron_drive,timeout_sec=1)
         while comm:
             print("while comm")
-            convertscales(throttle,reverse,steer)
-            send_pwm(newthrvalue,newstrvalue)
             comm = False
             rclpy.spin_once(kurwatron_drive,timeout_sec=1)
             if not comm:
-                break 
+                break
+            else:
+                convertscales(throttle,reverse,steer)
+                send_pwm(newthrvalue,newstrvalue)
+             
     
     # cmd_vel werte senden wenn kein timeout passiert ist
    
