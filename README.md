@@ -159,6 +159,12 @@ ros2 topic echo cmd_vel
 
 ### start camera and set smaller picture size
 ```
+gst-launch-1.0 -v v4l2src ! videoscale ! video/x-raw,width=800,height=600,framerate=20/1 ! avenc_mjpeg ! multipartmux ! tcpserversink port=8004 host=0.0.0.0
+```
+
+or on ROS2
+
+```
 ros2 run v4l2_camera v4l2_camera_node -p reliability:=best_effort
 ros2 param set /v4l2_camera image_size [320,240]
 ```
@@ -201,11 +207,25 @@ sudo cp ~/ros2_ws/src/kurwatron/ps3.config.yaml /opt/ros/foxy/share/teleop_twist
 
 ### uncompress and view image
 ```
+ssh ubuntu@192.168.178.101 gst-launch-1.0 v4l2src ! videoconvert ! videoscale ! video/x-raw,width=800,height=600,framerate=15/1 ! avenc_mjpeg ! multipartmux ! fdsink | pv | ffplay -
+```
+or on ROS2 (high latency):
+
+```
 ros2 run image_transport republish compressed --ros-args --remap in/compressed:=/image_raw/compressed --ros-args --remap out:=image/decompressed --ros-args -p reliability:=best_effort
 ros2 run rqt_image_view rqt_image_view --ros-args -p reliability:=best_effort
 ```
 
 ### start teloperation via ps4 controller
+
+add autodrivestart.sh in crontab
+
+```
+crontab -e
+
+
+```
+
 ```
 ros2 launch teleop_twist_joy teleop-launch.py joy_config:='ps3'
 ```
