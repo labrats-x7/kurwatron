@@ -75,6 +75,10 @@ sudo apt install python3-colcon-common-extensions
 sudo pip3 install adafruit-pca9685
 sudo pip3 install adafruit-circuitpython-servokit
 sudo pip3 install serial
+pip3 install adafruit-circuitpython-ssd1306
+sudo apt-get install python3-pil
+
+
 ```
 
 #### add user to i2c group
