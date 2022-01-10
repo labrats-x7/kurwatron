@@ -168,6 +168,12 @@ ros2 param set /v4l2_camera image_size [320,240]
 ros2 run kurwatron drive
 ```
 
+#### autostartdrive node
+```
+crontab -e
+@reboot screen -dmS drive ~/ros2_ws/src/kurwatron/autodrivestart.sh
+```
+
 ---
 
 
